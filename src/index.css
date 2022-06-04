@@ -1,3 +1,20 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.pathfinder-grid {
+  background-color: #fff;
+}
+
+.pathfinder-grid td {
+  border: solid black 1px;
+  width: 25px;
+  height: 25px;
+}
+
+.pathfinder-grid td.start {
+  background-color: lime;
+}
+.pathfinder-grid td.end {
+  background-color: maroon;
+}

@@ -1,5 +1,11 @@
+import Grid from "./components/grid.component";
+import Header from "./components/header.component";
+
 const App = () => (
-  <h1 className="text-3xl font-bold underline">Hello world!</h1>
+  <div className="flex flex-col h-screen">
+    <Header />
+    <Grid />
+  </div>
 );
 
 export default App;
