@@ -11,7 +11,9 @@
   width: 25px;
   height: 25px;
 }
-
+.pathfinder-grid td.wall {
+  background-color: #111;
+}
 .pathfinder-grid td.start {
   background-color: lime;
 }
