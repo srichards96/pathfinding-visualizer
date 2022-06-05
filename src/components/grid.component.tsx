@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CellType } from "../types/cell-type";
 import { Cell } from "../types/cell.type";
-import { getMouseButtonsPressed } from "../util/get-mouse-buttons-pressed";
 import { makeGrid } from "../util/make-grid";
+import GridCell from "./grid-cell.component";
 
 const cellSize = 25;
 
@@ -61,12 +61,23 @@ const Grid = () => {
     };
   }, [onWindowResize]);
 
-  function setCellType(row: number, col: number, type: CellType) {
-    // Dupe grid. Update specific cell. Update grid.
-    const newGrid = grid.map((r) => [...r.map((c) => ({ ...c }))]);
-    newGrid[row][col].type = type;
-    setGrid(newGrid);
-  }
+  const setCellType = useCallback(
+    (row: number, col: number, type: CellType) => {
+      setGrid((oldGrid) =>
+        oldGrid.map((r) =>
+          r.map((c) => {
+            // If cell is the specified one, update it's type
+            if (c.position.row === row && c.position.col === col) {
+              return { ...c, type };
+            }
+            // Otherwise return it as is
+            return c;
+          })
+        )
+      );
+    },
+    [setGrid]
+  );
 
   return (
     <main
@@ -78,36 +89,12 @@ const Grid = () => {
           {grid.map((row, rowI) => (
             <tr key={`row-${rowI}`}>
               {row.map((cell) => (
-                <td
-                  className={`cell ${cell.type}`}
-                  key={`cell-${cell.position.row}-${cell.position.col}`}
-                  onMouseEnter={(e) => {
-                    const { row, col } = cell.position;
-                    // Gross bitwise logic to determine which buttons are pressed
-                    const mouseButtonsPressed = getMouseButtonsPressed(
-                      e.buttons
-                    );
-                    if (mouseButtonsPressed.left) {
-                      setCellType(row, col, "wall");
-                    } else if (mouseButtonsPressed.right) {
-                      setCellType(row, col, "air");
-                    }
-                  }}
-                  onMouseDown={(e) => {
-                    // Prevent dragging
-                    e.preventDefault();
-                    const { row, col } = cell.position;
-                    const mouseButtonsPressed = getMouseButtonsPressed(
-                      e.buttons
-                    );
-                    if (mouseButtonsPressed.left) {
-                      setCellType(row, col, "wall");
-                    } else if (mouseButtonsPressed.right) {
-                      setCellType(row, col, "air");
-                    }
-                  }}
-                  // Prevent context menu
-                  onContextMenu={(e) => e.preventDefault()}
+                <GridCell
+                  row={cell.position.row}
+                  col={cell.position.col}
+                  type={cell.type}
+                  state={cell.state}
+                  setCellTypeFn={setCellType}
                 />
               ))}
             </tr>
