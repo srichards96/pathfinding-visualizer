@@ -1,6 +1,8 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { CellType } from "../types/cell-type";
-import { Cell } from "../types/cell.type";
+import { useCallback, useContext, useEffect, useRef } from "react";
+import {
+  PathfinderContext,
+  PathfinderContextType,
+} from "../context/pathfinder-context";
 import { makeGrid } from "../util/make-grid";
 import GridCell from "./grid-cell.component";
 
@@ -8,7 +10,9 @@ const cellSize = 25;
 
 const Grid = () => {
   const gridContainer = useRef<HTMLElement>(null);
-  const [grid, setGrid] = useState<Cell[][]>([]);
+  const { grid, setGrid, setCellType } = useContext(
+    PathfinderContext
+  ) as PathfinderContextType;
 
   const onWindowResize = useCallback(() => {
     const width = gridContainer.current!.clientWidth;
@@ -34,7 +38,7 @@ const Grid = () => {
     }
 
     setGrid(newGrid);
-  }, [grid]);
+  }, [grid, setGrid]);
 
   // Setup initial grid size based on container size
   useEffect(() => {
@@ -51,7 +55,7 @@ const Grid = () => {
     newGrid[1][1].type = "start";
     newGrid[rows - 2][cols - 2].type = "end";
     setGrid(newGrid);
-  }, []);
+  }, [setGrid]);
 
   // Setup event listeners
   useEffect(() => {
@@ -60,24 +64,6 @@ const Grid = () => {
       window.removeEventListener("resize", onWindowResize);
     };
   }, [onWindowResize]);
-
-  const setCellType = useCallback(
-    (row: number, col: number, type: CellType) => {
-      setGrid((oldGrid) =>
-        oldGrid.map((r) =>
-          r.map((c) => {
-            // If cell is the specified one, update it's type
-            if (c.position.row === row && c.position.col === col) {
-              return { ...c, type };
-            }
-            // Otherwise return it as is
-            return c;
-          })
-        )
-      );
-    },
-    [setGrid]
-  );
 
   return (
     <main
@@ -90,6 +76,7 @@ const Grid = () => {
             <tr key={`row-${rowI}`}>
               {row.map((cell) => (
                 <GridCell
+                  key={`cell-${cell.position.row}-${cell.position.col}`}
                   row={cell.position.row}
                   col={cell.position.col}
                   type={cell.type}
