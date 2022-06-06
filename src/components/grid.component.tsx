@@ -10,9 +10,8 @@ const cellSize = 25;
 
 const Grid = () => {
   const gridContainer = useRef<HTMLElement>(null);
-  const { grid, setGrid, selectedCellType, setCellType } = useContext(
-    PathfinderContext
-  ) as PathfinderContextType;
+  const { grid, setGrid, selectedCellType, setSelectedCellType, setCellType } =
+    useContext(PathfinderContext) as PathfinderContextType;
 
   const onWindowResize = useCallback(() => {
     const width = gridContainer.current!.clientWidth;
@@ -92,6 +91,7 @@ const Grid = () => {
                   state={cell.state}
                   setCellTypeToSelectedTypeFn={setCellTypeToSelectedType}
                   clearCellTypeFn={clearCellType}
+                  setSelectedCellTypeFn={setSelectedCellType}
                 />
               ))}
             </tr>

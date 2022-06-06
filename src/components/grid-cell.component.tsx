@@ -10,6 +10,7 @@ type Props = {
   state: CellState;
   setCellTypeToSelectedTypeFn: (row: number, col: number) => void;
   clearCellTypeFn: (row: number, col: number) => void;
+  setSelectedCellTypeFn: (newCellType: CellType) => void;
 };
 
 const GridCell = React.memo(
@@ -20,6 +21,7 @@ const GridCell = React.memo(
     state,
     setCellTypeToSelectedTypeFn,
     clearCellTypeFn,
+    setSelectedCellTypeFn,
   }: Props) => (
     <td
       className={`cell ${type}`}
@@ -40,6 +42,9 @@ const GridCell = React.memo(
           setCellTypeToSelectedTypeFn(row, col);
         } else if (mouseButtonsPressed.right) {
           clearCellTypeFn(row, col);
+        } else if (mouseButtonsPressed.middle) {
+          // Set selected cell type to this cell's CellType
+          setSelectedCellTypeFn(type);
         }
       }}
       // Prevent context menu
