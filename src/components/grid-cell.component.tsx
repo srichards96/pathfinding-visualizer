@@ -24,7 +24,7 @@ const GridCell = React.memo(
     setSelectedCellTypeFn,
   }: Props) => (
     <td
-      className={`cell ${type}`}
+      className={`cell cell-type-${type} cell-state-${state}`}
       key={`cell-${row}-${col}`}
       onMouseMove={(e) => {
         const mouseButtonsPressed = getMouseButtonsPressed(e.buttons);

@@ -1,13 +1,18 @@
 import React, { createContext, useCallback, useState } from "react";
 import { CellType } from "../types/cell-type";
 import { Cell } from "../types/cell.type";
+import { PathfindingAlgorithm } from "../types/pathfinding-algorithm.type";
 
 export type PathfinderContextType = {
   grid: Cell[][];
   setGrid: React.Dispatch<React.SetStateAction<Cell[][]>>;
+  setCellType: (row: number, col: number, type: CellType) => void;
   selectedCellType: CellType;
   setSelectedCellType: React.Dispatch<React.SetStateAction<CellType>>;
-  setCellType: (row: number, col: number, type: CellType) => void;
+  selectedAlgorithm: PathfindingAlgorithm;
+  setSelectedAlgorithm: React.Dispatch<
+    React.SetStateAction<PathfindingAlgorithm>
+  >;
 };
 
 export const PathfinderContext = createContext<PathfinderContextType | null>(
@@ -19,6 +24,8 @@ type PathfinderContextProps = { children: React.ReactNode };
 export const PathfinderProvider = ({ children }: PathfinderContextProps) => {
   const [grid, setGrid] = useState<Cell[][]>([]);
   const [selectedCellType, setSelectedCellType] = useState<CellType>("wall");
+  const [selectedAlgorithm, setSelectedAlgorithm] =
+    useState<PathfindingAlgorithm>("dijkstra's algorithm");
 
   const setCellType = useCallback(
     (row: number, col: number, type: CellType) => {
@@ -43,9 +50,11 @@ export const PathfinderProvider = ({ children }: PathfinderContextProps) => {
       value={{
         grid,
         setGrid,
+        setCellType,
         selectedCellType,
         setSelectedCellType,
-        setCellType,
+        selectedAlgorithm,
+        setSelectedAlgorithm,
       }}
     >
       {children}

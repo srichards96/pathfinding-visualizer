@@ -10,13 +10,37 @@
   border: solid black 1px;
   width: 25px;
   height: 25px;
+  position: relative;
 }
-.pathfinder-grid td.wall {
+
+/* Cell state styles */
+.pathfinder-grid td.cell-state-visited::after {
+  content: " ";
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: purple;
+  opacity: 0.75;
+}
+.pathfinder-grid td.cell-state-path::after {
+  content: " ";
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: yellow;
+}
+
+/* Cell type styles */
+.pathfinder-grid td.cell-type-wall {
   background-color: #111;
 }
-.pathfinder-grid td.start {
+.pathfinder-grid td.cell-type-start {
   background-color: lime;
 }
-.pathfinder-grid td.end {
+.pathfinder-grid td.cell-type-end {
   background-color: maroon;
 }
