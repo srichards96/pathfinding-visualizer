@@ -10,7 +10,7 @@ const cellSize = 25;
 
 const Grid = () => {
   const gridContainer = useRef<HTMLElement>(null);
-  const { grid, setGrid, setCellType } = useContext(
+  const { grid, setGrid, selectedCellType, setCellType } = useContext(
     PathfinderContext
   ) as PathfinderContextType;
 
@@ -65,6 +65,15 @@ const Grid = () => {
     };
   }, [onWindowResize]);
 
+  const setCellTypeToSelectedType = useCallback(
+    (row: number, col: number) => setCellType(row, col, selectedCellType),
+    [setCellType, selectedCellType]
+  );
+  const clearCellType = useCallback(
+    (row: number, col: number) => setCellType(row, col, "air"),
+    [setCellType]
+  );
+
   return (
     <main
       className="flex-grow bg-gray-500 flex justify-center items-center overflow-y-hidden"
@@ -81,7 +90,8 @@ const Grid = () => {
                   col={cell.position.col}
                   type={cell.type}
                   state={cell.state}
-                  setCellTypeFn={setCellType}
+                  setCellTypeToSelectedTypeFn={setCellTypeToSelectedType}
+                  clearCellTypeFn={clearCellType}
                 />
               ))}
             </tr>

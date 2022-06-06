@@ -5,6 +5,8 @@ import { Cell } from "../types/cell.type";
 export type PathfinderContextType = {
   grid: Cell[][];
   setGrid: React.Dispatch<React.SetStateAction<Cell[][]>>;
+  selectedCellType: CellType;
+  setSelectedCellType: React.Dispatch<React.SetStateAction<CellType>>;
   setCellType: (row: number, col: number, type: CellType) => void;
 };
 
@@ -16,6 +18,7 @@ type PathfinderContextProps = { children: React.ReactNode };
 
 export const PathfinderProvider = ({ children }: PathfinderContextProps) => {
   const [grid, setGrid] = useState<Cell[][]>([]);
+  const [selectedCellType, setSelectedCellType] = useState<CellType>("wall");
 
   const setCellType = useCallback(
     (row: number, col: number, type: CellType) => {
@@ -36,7 +39,15 @@ export const PathfinderProvider = ({ children }: PathfinderContextProps) => {
   );
 
   return (
-    <PathfinderContext.Provider value={{ grid, setGrid, setCellType }}>
+    <PathfinderContext.Provider
+      value={{
+        grid,
+        setGrid,
+        selectedCellType,
+        setSelectedCellType,
+        setCellType,
+      }}
+    >
       {children}
     </PathfinderContext.Provider>
   );

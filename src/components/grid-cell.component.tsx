@@ -8,20 +8,28 @@ type Props = {
   col: number;
   type: CellType;
   state: CellState;
-  setCellTypeFn: (row: number, col: number, newCellType: CellType) => void;
+  setCellTypeToSelectedTypeFn: (row: number, col: number) => void;
+  clearCellTypeFn: (row: number, col: number) => void;
 };
 
 const GridCell = React.memo(
-  ({ row, col, type, state, setCellTypeFn }: Props) => (
+  ({
+    row,
+    col,
+    type,
+    state,
+    setCellTypeToSelectedTypeFn,
+    clearCellTypeFn,
+  }: Props) => (
     <td
       className={`cell ${type}`}
       key={`cell-${row}-${col}`}
       onMouseMove={(e) => {
         const mouseButtonsPressed = getMouseButtonsPressed(e.buttons);
         if (mouseButtonsPressed.left) {
-          setCellTypeFn(row, col, "wall");
+          setCellTypeToSelectedTypeFn(row, col);
         } else if (mouseButtonsPressed.right) {
-          setCellTypeFn(row, col, "air");
+          clearCellTypeFn(row, col);
         }
       }}
       onMouseDown={(e) => {
@@ -29,9 +37,9 @@ const GridCell = React.memo(
         e.preventDefault();
         const mouseButtonsPressed = getMouseButtonsPressed(e.buttons);
         if (mouseButtonsPressed.left) {
-          setCellTypeFn(row, col, "wall");
+          setCellTypeToSelectedTypeFn(row, col);
         } else if (mouseButtonsPressed.right) {
-          setCellTypeFn(row, col, "air");
+          clearCellTypeFn(row, col);
         }
       }}
       // Prevent context menu
