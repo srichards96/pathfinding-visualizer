@@ -22,6 +22,9 @@ const Header = () => {
     setSelectedCellType,
     selectedAlgorithm,
     setSelectedAlgorithm,
+
+    resetCellStates,
+    runDijkstra,
   } = useContext(PathfinderContext) as PathfinderContextType;
 
   return (
@@ -57,6 +60,9 @@ const Header = () => {
               label: ao,
             }))}
           />
+
+          <button onClick={runDijkstra}>Pathfind</button>
+          <button onClick={resetCellStates}>Reset state</button>
         </div>
       </div>
     </header>
