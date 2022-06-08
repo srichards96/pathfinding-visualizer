@@ -18,6 +18,7 @@ export type PathfinderContextType = {
   >;
 
   resetCellStates: () => void;
+  resetGrid: () => void;
   runDijkstra: () => void;
 };
 
@@ -60,11 +61,22 @@ export const PathfinderProvider = ({ children }: PathfinderContextProps) => {
     [setGrid]
   );
 
+  // Clear pathfinding/path visuals
   const resetCellStates = () => {
     setGrid((oldGrid) =>
       oldGrid.map((row) => row.map((cell) => ({ ...cell, state: "unvisited" })))
     );
   };
+
+  // Clear pathfinding/path visuals and cell types (make all cell types 'air')
+  const resetGrid = () => {
+    setGrid((oldGrid) =>
+      oldGrid.map((row) =>
+        row.map((cell) => ({ ...cell, type: "air", state: "unvisited" }))
+      )
+    );
+  };
+
   const runDijkstra = () => {
     // Clear "state" of all grid cells
     setGrid((oldGrid) =>
@@ -148,6 +160,7 @@ export const PathfinderProvider = ({ children }: PathfinderContextProps) => {
         selectedAlgorithm,
         setSelectedAlgorithm,
         resetCellStates,
+        resetGrid,
         runDijkstra,
       }}
     >
