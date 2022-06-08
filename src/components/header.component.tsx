@@ -15,6 +15,7 @@ const algorithmOptions: PathfindingAlgorithm[] = [
   "breadth first search",
   "depth first search",
 ];
+const animationTimeOptions: number[] = [10, 20, 50, 100, 200, 500, 1000];
 
 const Header = () => {
   const {
@@ -24,6 +25,8 @@ const Header = () => {
     setSelectedCellType,
     selectedAlgorithm,
     setSelectedAlgorithm,
+    animationTime,
+    setAnimationTime,
 
     resetCellStates,
     resetGrid,
@@ -62,6 +65,20 @@ const Header = () => {
               key: ao,
               value: ao,
               label: ao,
+            }))}
+            disabled={algorithmRunning}
+          />
+
+          <FormSelect
+            className="capitalize text-black"
+            id="animationTimeSelect"
+            value={animationTime}
+            setValueFn={(newValue) => setAnimationTime(newValue)}
+            label="Animation Speed (ms)"
+            options={animationTimeOptions.map((aTime) => ({
+              key: aTime.toString(),
+              value: aTime,
+              label: aTime.toString(),
             }))}
             disabled={algorithmRunning}
           />

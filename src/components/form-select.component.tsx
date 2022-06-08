@@ -1,25 +1,25 @@
 import React from "react";
 
-type Props = {
+type Props<T> = {
   id: string;
-  value: string;
-  setValueFn: (newValue: string) => void;
+  value: T;
+  setValueFn: (newValue: T) => void;
   label: string;
   options: {
     key: string;
     label: string;
-    value: string;
+    value: T;
   }[];
 };
 
-const FormSelect = ({
+const FormSelect = <T extends string | number>({
   id,
   value,
   setValueFn,
   label,
   options,
   ...otherProps
-}: Props & React.SelectHTMLAttributes<HTMLSelectElement>) => (
+}: Props<T> & React.SelectHTMLAttributes<HTMLSelectElement>) => (
   <section>
     <label className="block mb-1" htmlFor="id">
       {label}
@@ -30,7 +30,7 @@ const FormSelect = ({
       id={id}
       value={value}
       {...otherProps}
-      onChange={(e) => setValueFn(e.currentTarget.value)}
+      onChange={(e) => setValueFn(e.currentTarget.value as T)}
     >
       {options.map((o) => (
         <option key={o.key} value={o.value}>

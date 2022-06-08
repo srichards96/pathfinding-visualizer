@@ -10,6 +10,7 @@ export type PathfinderContextType = {
   grid: Cell[][];
   setGrid: React.Dispatch<React.SetStateAction<Cell[][]>>;
   algorithmRunning: boolean;
+
   setCellType: (row: number, col: number, type: CellType) => void;
   selectedCellType: CellType;
   setSelectedCellType: React.Dispatch<React.SetStateAction<CellType>>;
@@ -17,6 +18,8 @@ export type PathfinderContextType = {
   setSelectedAlgorithm: React.Dispatch<
     React.SetStateAction<PathfindingAlgorithm>
   >;
+  animationTime: number;
+  setAnimationTime: React.Dispatch<React.SetStateAction<number>>;
 
   resetCellStates: () => void;
   resetGrid: () => void;
@@ -35,6 +38,7 @@ export const PathfinderProvider = ({ children }: PathfinderContextProps) => {
   const [selectedCellType, setSelectedCellType] = useState<CellType>("wall");
   const [selectedAlgorithm, setSelectedAlgorithm] =
     useState<PathfindingAlgorithm>("dijkstra's algorithm");
+  const [animationTime, setAnimationTime] = useState<number>(50);
 
   const setCellType = useCallback(
     (row: number, col: number, type: CellType) => {
@@ -110,9 +114,6 @@ export const PathfinderProvider = ({ children }: PathfinderContextProps) => {
         return;
     }
 
-    // todo make state
-    const speed = 50;
-
     // Use timeouts to offset the update of each cell to animate the pathfinding/path.
     let nodesAnimated = 0;
 
@@ -131,7 +132,7 @@ export const PathfinderProvider = ({ children }: PathfinderContextProps) => {
             })
           )
         );
-      }, nodesAnimated++ * speed);
+      }, nodesAnimated++ * animationTime);
     });
 
     // Animate path if found
@@ -149,13 +150,13 @@ export const PathfinderProvider = ({ children }: PathfinderContextProps) => {
             })
           )
         );
-      }, nodesAnimated++ * speed);
+      }, nodesAnimated++ * animationTime);
     });
 
     // Finally, re-enable editing/re-running
     setTimeout(() => {
       setAlgorithmRunning(false);
-    }, nodesAnimated * speed);
+    }, nodesAnimated * animationTime);
   };
 
   return (
@@ -169,6 +170,8 @@ export const PathfinderProvider = ({ children }: PathfinderContextProps) => {
         setSelectedCellType,
         selectedAlgorithm,
         setSelectedAlgorithm,
+        animationTime,
+        setAnimationTime,
         resetCellStates,
         resetGrid,
         runAlgorithm,
