@@ -27,7 +27,7 @@ const Header = () => {
 
     resetCellStates,
     resetGrid,
-    runDijkstra,
+    runAlgorithm,
   } = useContext(PathfinderContext) as PathfinderContextType;
 
   return (
@@ -66,7 +66,7 @@ const Header = () => {
             disabled={algorithmRunning}
           />
 
-          <button onClick={runDijkstra} disabled={algorithmRunning}>
+          <button onClick={runAlgorithm} disabled={algorithmRunning}>
             Visualize Pathfind
           </button>
           <button onClick={resetCellStates} disabled={algorithmRunning}>

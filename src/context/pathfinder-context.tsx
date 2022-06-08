@@ -2,6 +2,7 @@ import React, { createContext, useCallback, useState } from "react";
 import { dijkstras } from "../algorithms/djikstras";
 import { CellType } from "../types/cell-type";
 import { Cell } from "../types/cell.type";
+import { GridPosition } from "../types/grid-position.type";
 import { PathfindingAlgorithm } from "../types/pathfinding-algorithm.type";
 import { findStartAndEndCells } from "../util/find-start-and-end-cells";
 
@@ -19,7 +20,7 @@ export type PathfinderContextType = {
 
   resetCellStates: () => void;
   resetGrid: () => void;
-  runDijkstra: () => void;
+  runAlgorithm: () => void;
 };
 
 export const PathfinderContext = createContext<PathfinderContextType | null>(
@@ -77,12 +78,8 @@ export const PathfinderProvider = ({ children }: PathfinderContextProps) => {
     );
   };
 
-  const runDijkstra = () => {
-    // Clear "state" of all grid cells
-    setGrid((oldGrid) =>
-      oldGrid.map((row) => row.map((cell) => ({ ...cell, state: "unvisited" })))
-    );
-
+  const runAlgorithm = () => {
+    // Locate start/end cells. Ensure they exist.
     const [start, end] = findStartAndEndCells(grid);
     if (!start) {
       alert("No start cell found");
@@ -93,59 +90,72 @@ export const PathfinderProvider = ({ children }: PathfinderContextProps) => {
       return;
     }
 
+    // Clear "state" of all grid cells
+    setGrid((oldGrid) =>
+      oldGrid.map((row) => row.map((cell) => ({ ...cell, state: "unvisited" })))
+    );
+
     // Disabled editing/re-running until pathfinding and animations have completed
     setAlgorithmRunning(true);
 
-    const [nodesVisitedInOrder, pathInOrder] = dijkstras(grid, start, end);
+    let nodesVisitedInOrder: GridPosition[] = [];
+    let pathInOrder: GridPosition[] | undefined = undefined;
+    switch (selectedAlgorithm) {
+      case "dijkstra's algorithm":
+        [nodesVisitedInOrder, pathInOrder] = dijkstras(grid, start, end);
+        break;
+      default:
+        setAlgorithmRunning(false);
+        alert("Selected algorithm not implemented");
+        return;
+    }
 
     // todo make state
     const speed = 50;
 
-    nodesVisitedInOrder.forEach((visitedNode, i) => {
-      setTimeout(
-        () =>
-          setGrid((oldGrid) =>
-            oldGrid.map((row) =>
-              row.map((cell) => {
-                const { row, col } = cell.position;
-                const updatedCell = { ...cell };
-                if (row === visitedNode.row && col === visitedNode.col) {
-                  updatedCell.state = "visited";
-                }
-                return updatedCell;
-              })
-            )
-          ),
-        i * speed
-      );
+    // Use timeouts to offset the update of each cell to animate the pathfinding/path.
+    let nodesAnimated = 0;
+
+    // Animate pathfinding
+    nodesVisitedInOrder.forEach((visitedNode) => {
+      setTimeout(() => {
+        setGrid((oldGrid) =>
+          oldGrid.map((row) =>
+            row.map((cell) => {
+              const { row, col } = cell.position;
+              const updatedCell = { ...cell };
+              if (row === visitedNode.row && col === visitedNode.col) {
+                updatedCell.state = "visited";
+              }
+              return updatedCell;
+            })
+          )
+        );
+      }, nodesAnimated++ * speed);
     });
 
-    const pathTimeoutOffset = nodesVisitedInOrder.length * speed;
-    pathInOrder?.forEach((pathNode, i) => {
-      setTimeout(
-        () =>
-          setGrid((oldGrid) =>
-            oldGrid.map((row) =>
-              row.map((cell) => {
-                const { row, col } = cell.position;
-                const updatedCell = { ...cell };
-                if (row === pathNode.row && col === pathNode.col) {
-                  updatedCell.state = "path";
-                }
-                return updatedCell;
-              })
-            )
-          ),
-        pathTimeoutOffset + i * speed
-      );
+    // Animate path if found
+    pathInOrder?.forEach((pathNode) => {
+      setTimeout(() => {
+        setGrid((oldGrid) =>
+          oldGrid.map((row) =>
+            row.map((cell) => {
+              const { row, col } = cell.position;
+              const updatedCell = { ...cell };
+              if (row === pathNode.row && col === pathNode.col) {
+                updatedCell.state = "path";
+              }
+              return updatedCell;
+            })
+          )
+        );
+      }, nodesAnimated++ * speed);
     });
 
-    // After pathfinding and animations have finished, re-enable editing/re-running
-    const timeoutOffset =
-      pathTimeoutOffset + (pathInOrder?.length ?? 0) * speed;
+    // Finally, re-enable editing/re-running
     setTimeout(() => {
       setAlgorithmRunning(false);
-    }, timeoutOffset);
+    }, nodesAnimated * speed);
   };
 
   return (
@@ -161,7 +171,7 @@ export const PathfinderProvider = ({ children }: PathfinderContextProps) => {
         setSelectedAlgorithm,
         resetCellStates,
         resetGrid,
-        runDijkstra,
+        runAlgorithm,
       }}
     >
       {children}
