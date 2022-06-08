@@ -10,8 +10,14 @@ const cellSize = 25;
 
 const Grid = () => {
   const gridContainer = useRef<HTMLElement>(null);
-  const { grid, setGrid, selectedCellType, setSelectedCellType, setCellType } =
-    useContext(PathfinderContext) as PathfinderContextType;
+  const {
+    grid,
+    setGrid,
+    algorithmRunning,
+    selectedCellType,
+    setSelectedCellType,
+    setCellType,
+  } = useContext(PathfinderContext) as PathfinderContextType;
 
   const onWindowResize = useCallback(() => {
     const width = gridContainer.current!.clientWidth;
@@ -64,13 +70,22 @@ const Grid = () => {
     };
   }, [onWindowResize]);
 
+  // Only allowing editing of cell type if algorithm is not running
   const setCellTypeToSelectedType = useCallback(
-    (row: number, col: number) => setCellType(row, col, selectedCellType),
-    [setCellType, selectedCellType]
+    (row: number, col: number) => {
+      if (!algorithmRunning) {
+        setCellType(row, col, selectedCellType);
+      }
+    },
+    [setCellType, selectedCellType, algorithmRunning]
   );
   const clearCellType = useCallback(
-    (row: number, col: number) => setCellType(row, col, "air"),
-    [setCellType]
+    (row: number, col: number) => {
+      if (!algorithmRunning) {
+        algorithmRunning && setCellType(row, col, "air");
+      }
+    },
+    [setCellType, algorithmRunning]
   );
 
   return (

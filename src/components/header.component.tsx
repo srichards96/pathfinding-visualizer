@@ -18,6 +18,8 @@ const algorithmOptions: PathfindingAlgorithm[] = [
 
 const Header = () => {
   const {
+    algorithmRunning,
+
     selectedCellType,
     setSelectedCellType,
     selectedAlgorithm,
@@ -44,6 +46,7 @@ const Header = () => {
               value: cto,
               label: `(${cellTypeToWeight(cto)}) ${cto}`,
             }))}
+            disabled={algorithmRunning}
           />
 
           <FormSelect
@@ -59,10 +62,15 @@ const Header = () => {
               value: ao,
               label: ao,
             }))}
+            disabled={algorithmRunning}
           />
 
-          <button onClick={runDijkstra}>Pathfind</button>
-          <button onClick={resetCellStates}>Reset state</button>
+          <button onClick={runDijkstra} disabled={algorithmRunning}>
+            Pathfind
+          </button>
+          <button onClick={resetCellStates} disabled={algorithmRunning}>
+            Reset state
+          </button>
         </div>
       </div>
     </header>

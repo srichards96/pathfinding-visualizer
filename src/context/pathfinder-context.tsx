@@ -8,6 +8,7 @@ import { findStartAndEndCells } from "../util/find-start-and-end-cells";
 export type PathfinderContextType = {
   grid: Cell[][];
   setGrid: React.Dispatch<React.SetStateAction<Cell[][]>>;
+  algorithmRunning: boolean;
   setCellType: (row: number, col: number, type: CellType) => void;
   selectedCellType: CellType;
   setSelectedCellType: React.Dispatch<React.SetStateAction<CellType>>;
@@ -28,6 +29,7 @@ type PathfinderContextProps = { children: React.ReactNode };
 
 export const PathfinderProvider = ({ children }: PathfinderContextProps) => {
   const [grid, setGrid] = useState<Cell[][]>([]);
+  const [algorithmRunning, setAlgorithmRunning] = useState<boolean>(false);
   const [selectedCellType, setSelectedCellType] = useState<CellType>("wall");
   const [selectedAlgorithm, setSelectedAlgorithm] =
     useState<PathfindingAlgorithm>("dijkstra's algorithm");
@@ -79,6 +81,9 @@ export const PathfinderProvider = ({ children }: PathfinderContextProps) => {
       return;
     }
 
+    // Disabled editing/re-running until pathfinding and animations have completed
+    setAlgorithmRunning(true);
+
     const [nodesVisitedInOrder, pathInOrder] = dijkstras(grid, start, end);
 
     // todo make state
@@ -122,6 +127,13 @@ export const PathfinderProvider = ({ children }: PathfinderContextProps) => {
         pathTimeoutOffset + i * speed
       );
     });
+
+    // After pathfinding and animations have finished, re-enable editing/re-running
+    const timeoutOffset =
+      pathTimeoutOffset + (pathInOrder?.length ?? 0) * speed;
+    setTimeout(() => {
+      setAlgorithmRunning(false);
+    }, timeoutOffset);
   };
 
   return (
@@ -129,12 +141,12 @@ export const PathfinderProvider = ({ children }: PathfinderContextProps) => {
       value={{
         grid,
         setGrid,
+        algorithmRunning,
         setCellType,
         selectedCellType,
         setSelectedCellType,
         selectedAlgorithm,
         setSelectedAlgorithm,
-
         resetCellStates,
         runDijkstra,
       }}

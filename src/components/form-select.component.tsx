@@ -19,7 +19,7 @@ const FormSelect = ({
   label,
   options,
   ...otherProps
-}: Props & React.HTMLAttributes<HTMLSelectElement>) => (
+}: Props & React.SelectHTMLAttributes<HTMLSelectElement>) => (
   <section>
     <label className="block mb-1" htmlFor="id">
       {label}
