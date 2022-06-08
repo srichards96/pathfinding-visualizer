@@ -82,7 +82,7 @@ const Grid = () => {
   const clearCellType = useCallback(
     (row: number, col: number) => {
       if (!algorithmRunning) {
-        algorithmRunning && setCellType(row, col, "air");
+        setCellType(row, col, "air");
       }
     },
     [setCellType, algorithmRunning]
