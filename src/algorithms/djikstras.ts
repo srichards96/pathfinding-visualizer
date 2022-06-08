@@ -117,8 +117,8 @@ const getNeighbors = (currentNode: DijkstraNode, grid: DijkstraNode[][]) => {
 const getPath = (endNode: DijkstraNode): DijkstraNode[] => {
   const pathInOrder: DijkstraNode[] = [];
 
-  let currentNode = endNode;
-  while (!!currentNode.previousNode) {
+  let currentNode: DijkstraNode | undefined = endNode;
+  while (!!currentNode) {
     pathInOrder.unshift(currentNode);
     currentNode = currentNode.previousNode;
   }
