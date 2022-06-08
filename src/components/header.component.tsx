@@ -6,6 +6,7 @@ import {
 import { CellType } from "../types/cell-type";
 import { PathfindingAlgorithm } from "../types/pathfinding-algorithm.type";
 import { cellTypeToWeight } from "../util/cell-type-to-weight";
+import { PrimaryButton, SecondaryButton } from "./buttons";
 import FormSelect from "./form-select.component";
 
 const cellTypeOptions: CellType[] = ["start", "end", "air", "wall"];
@@ -38,7 +39,7 @@ const Header = () => {
       <div className="container mx-auto flex items-center flex-wrap">
         <h1 className="text-2xl mr-8">Pathfinding Visualizer</h1>
 
-        <div className="inline-flex items-center gap-4 flex-wrap">
+        <div className="inline-flex items-end gap-4 flex-wrap">
           <FormSelect
             className="capitalize text-black"
             id="cellTypeSelect"
@@ -83,15 +84,20 @@ const Header = () => {
             disabled={algorithmRunning}
           />
 
-          <button onClick={runAlgorithm} disabled={algorithmRunning}>
+          <PrimaryButton onClick={runAlgorithm} disabled={algorithmRunning}>
             Visualize Pathfind
-          </button>
-          <button onClick={resetCellStates} disabled={algorithmRunning}>
+          </PrimaryButton>
+
+          <SecondaryButton
+            onClick={resetCellStates}
+            disabled={algorithmRunning}
+          >
             Reset Pathfind
-          </button>
-          <button onClick={resetGrid} disabled={algorithmRunning}>
+          </SecondaryButton>
+
+          <SecondaryButton onClick={resetGrid} disabled={algorithmRunning}>
             Reset Grid
-          </button>
+          </SecondaryButton>
         </div>
       </div>
     </header>
