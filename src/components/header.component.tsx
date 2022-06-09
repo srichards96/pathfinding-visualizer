@@ -9,7 +9,19 @@ import { cellTypeToWeight } from "../util/cell-type-to-weight";
 import { PrimaryButton, SecondaryButton } from "./buttons";
 import FormSelect from "./form-select.component";
 
-const cellTypeOptions: CellType[] = ["start", "end", "air", "wall"];
+const cellTypeOptions: CellType[] = [
+  "start",
+  "end",
+  "wall",
+  "air",
+  "gravel",
+  "sand",
+  "grass",
+  "long-grass",
+  "mud",
+  "water",
+  "deep-water",
+];
 const algorithmOptions: PathfindingAlgorithm[] = [
   "dijkstra's algorithm",
   "a* search",
