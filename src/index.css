@@ -7,7 +7,10 @@
 }
 
 .pathfinder-grid td {
-  border: solid black 1px;
+  /* Has to be left/bottom only */
+  /* Having border on all sides have some weird effects on scaling cell animations... */
+  border-left: solid #222 1px;
+  border-bottom: solid #222 1px;
   width: 25px;
   height: 25px;
   position: relative;
@@ -15,15 +18,18 @@
 
 /* Cell state styles */
 .pathfinder-grid
-  td.cell-state-visited:not(.cell-type-start):not(.cell-type-end)::after {
+  td.cell-state-visited:not(.cell-type-start):not(.cell-type-end)::before,
+.pathfinder-grid
+  td.cell-state-path:not(.cell-type-start):not(.cell-type-end)::before {
   content: " ";
   position: absolute;
   top: 0;
   left: 0;
   bottom: 0;
   right: 0;
-  background-color: purple;
+  background-color: #800080;
   opacity: 0.75;
+  animation: visited-animation 1000ms;
 }
 .pathfinder-grid
   td.cell-state-path:not(.cell-type-start):not(.cell-type-end)::after {
@@ -33,7 +39,8 @@
   left: 0;
   bottom: 0;
   right: 0;
-  background-color: yellow;
+  background-color: #ffff00;
+  animation: path-animation 500ms;
 }
 
 /* Cell type styles */
@@ -66,4 +73,28 @@
 }
 .pathfinder-grid td.cell-type-deep-water {
   background-color: rgb(0, 53, 122);
+}
+
+@keyframes visited-animation {
+  0% {
+    transform: scale(0.2);
+    background-color: aqua;
+    border-radius: 50%;
+  }
+  100% {
+    transform: scale(1);
+    border-radius: 0;
+    background-color: #800080;
+  }
+}
+
+@keyframes path-animation {
+  0% {
+    transform: scale(0.2);
+    border-radius: 50%;
+  }
+  100% {
+    transform: scale(1);
+    border-radius: 0;
+  }
 }
