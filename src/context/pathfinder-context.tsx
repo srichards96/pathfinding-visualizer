@@ -1,4 +1,5 @@
 import React, { createContext, useCallback, useState } from "react";
+import { bfs } from "../algorithms/bfs";
 import { dijkstras } from "../algorithms/djikstras";
 import { CellType } from "../types/cell-type";
 import { Cell } from "../types/cell.type";
@@ -107,6 +108,9 @@ export const PathfinderProvider = ({ children }: PathfinderContextProps) => {
     switch (selectedAlgorithm) {
       case "dijkstra's algorithm":
         [nodesVisitedInOrder, pathInOrder] = dijkstras(grid, start, end);
+        break;
+      case "breadth first search":
+        [nodesVisitedInOrder, pathInOrder] = bfs(grid, start, end);
         break;
       default:
         setAlgorithmRunning(false);

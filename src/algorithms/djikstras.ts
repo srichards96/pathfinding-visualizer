@@ -1,6 +1,8 @@
 import { Cell } from "../types/cell.type";
 import { GridPosition } from "../types/grid-position.type";
+import { PathfindingResult } from "../types/pathfinding-result.type";
 import { cellTypeToWeight } from "../util/cell-type-to-weight";
+import { getTreeDescent } from "../util/get-tree-descent";
 
 type DijkstraNode = {
   position: GridPosition;
@@ -10,18 +12,11 @@ type DijkstraNode = {
   previousNode?: DijkstraNode;
 };
 
-/**
- *
- * @param grid
- * @param startCell
- * @param endCell
- * @returns
- */
 export const dijkstras = (
   grid: Cell[][],
   startCell: Cell,
   endCell: Cell
-): [GridPosition[], GridPosition[] | undefined] => {
+): PathfindingResult => {
   const visitedNodesInOrder: DijkstraNode[] = [];
 
   // Duplicate grid and convert to DijkstraNodes
@@ -61,7 +56,7 @@ export const dijkstras = (
     updateNeighbors(closestNode, dijkstraGrid);
   }
 
-  const path = endDijkstraNode ? getPath(endDijkstraNode) : undefined;
+  const path = endDijkstraNode ? getTreeDescent(endDijkstraNode) : undefined;
   // Return visited nodes in order and path - only return GridPositions
   return [
     visitedNodesInOrder.map((x) => x.position),
@@ -112,16 +107,4 @@ const getNeighbors = (currentNode: DijkstraNode, grid: DijkstraNode[][]) => {
 
   // Return unvisited neighbors
   return neighbors.filter((x) => !x.visited);
-};
-
-const getPath = (endNode: DijkstraNode): DijkstraNode[] => {
-  const pathInOrder: DijkstraNode[] = [];
-
-  let currentNode: DijkstraNode | undefined = endNode;
-  while (!!currentNode) {
-    pathInOrder.unshift(currentNode);
-    currentNode = currentNode.previousNode;
-  }
-
-  return pathInOrder;
 };
