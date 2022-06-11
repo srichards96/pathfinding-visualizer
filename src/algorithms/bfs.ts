@@ -27,10 +27,16 @@ export const bfs = (
 
   while (queue.length > 0) {
     const currentNode = queue.shift()!;
+
+    // If node is a wall, ignore it
+    const { row, col } = currentNode.position;
+    if (grid[row][col].type === "wall") {
+      continue;
+    }
+
     visitedNodesInOrder.push(currentNode);
 
     // If end node has been found, stop searching
-    const { row, col } = currentNode.position;
     if (row === endCell.position.row && col === endCell.position.col) {
       endBFSNode = currentNode;
       break;
