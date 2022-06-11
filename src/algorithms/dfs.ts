@@ -3,52 +3,60 @@ import { GridPosition } from "../types/grid-position.type";
 import { PathfindingResult } from "../types/pathfinding-result.type";
 import { getTreeDescent } from "../util/get-tree-descent";
 
-type BFSNode = {
+type DFSNode = {
   position: GridPosition;
   visited: boolean;
-  previousNode?: BFSNode;
+  previousNode?: DFSNode;
 };
 
-export const bfs = (
+export const dfs = (
   grid: Cell[][],
   startCell: Cell,
   endCell: Cell
 ): PathfindingResult => {
-  const visitedNodesInOrder: BFSNode[] = [];
-  let endBFSNode: BFSNode | undefined = undefined;
+  const visitedNodesInOrder: DFSNode[] = [];
+  let endDFSNode: DFSNode | undefined = undefined;
 
-  const bfsGrid = cellGridtoBFSGrid(grid);
+  const dfsGrid = cellGridtoDFSGrid(grid);
 
-  // Create queue with start cell in it - mark start cell as visited
-  bfsGrid[startCell.position.row][startCell.position.col].visited = true;
-  const queue: BFSNode[] = [
-    bfsGrid[startCell.position.row][startCell.position.col],
+  // Create stack with start cell in it
+  const stack: DFSNode[] = [
+    dfsGrid[startCell.position.row][startCell.position.col],
   ];
 
-  while (queue.length > 0) {
-    const currentNode = queue.shift()!;
+  while (stack.length > 0) {
+    const currentNode = stack.pop()!;
+
+    if (currentNode.visited) {
+      continue;
+    }
+
+    // If node is a wall, ignore it
+    const { row, col } = currentNode.position;
+    if (grid[row][col].type === "wall") {
+      continue;
+    }
+
+    currentNode.visited = true;
     visitedNodesInOrder.push(currentNode);
 
     // If end node has been found, stop searching
-    const { row, col } = currentNode.position;
     if (row === endCell.position.row && col === endCell.position.col) {
-      endBFSNode = currentNode;
+      endDFSNode = currentNode;
       break;
     }
 
-    // Enqueue each unvisited neighbor
-    const neighborCells = getNeighbors(currentNode, bfsGrid);
+    // Push each unvisited neighbor
+    const neighborCells = getNeighbors(currentNode, dfsGrid);
     for (const neighbor of neighborCells) {
       if (!neighbor.visited) {
-        // Neighbor is about to be visited, so set it to visited
-        neighbor.visited = true;
         neighbor.previousNode = currentNode;
-        queue.push(neighbor);
+        stack.push(neighbor);
       }
     }
   }
 
-  const path = endBFSNode ? getTreeDescent(endBFSNode) : undefined;
+  const path = endDFSNode ? getTreeDescent(endDFSNode) : undefined;
   // Return visited nodes in order and path - only return GridPositions
   return [
     visitedNodesInOrder.map((x) => x.position),
@@ -56,7 +64,7 @@ export const bfs = (
   ];
 };
 
-const cellGridtoBFSGrid = (grid: Cell[][]): BFSNode[][] =>
+const cellGridtoDFSGrid = (grid: Cell[][]): DFSNode[][] =>
   grid.map((row) =>
     row.map((cell) => ({
       position: { ...cell.position },
@@ -65,7 +73,7 @@ const cellGridtoBFSGrid = (grid: Cell[][]): BFSNode[][] =>
     }))
   );
 
-const getNeighbors = (currentNode: BFSNode, grid: BFSNode[][]): BFSNode[] => {
+const getNeighbors = (currentNode: DFSNode, grid: DFSNode[][]): DFSNode[] => {
   const neighbors = [];
 
   // Get nodes on all 4 sides of current node (unless out of bounds)

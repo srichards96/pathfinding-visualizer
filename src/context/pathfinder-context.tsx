@@ -1,6 +1,5 @@
 import React, { createContext, useCallback, useState } from "react";
-import { bfs } from "../algorithms/bfs";
-import { dijkstras } from "../algorithms/djikstras";
+import { bfs, dfs, dijkstras } from "../algorithms";
 import { CellType } from "../types/cell-type";
 import { Cell } from "../types/cell.type";
 import { GridPosition } from "../types/grid-position.type";
@@ -111,6 +110,9 @@ export const PathfinderProvider = ({ children }: PathfinderContextProps) => {
         break;
       case "breadth first search":
         [nodesVisitedInOrder, pathInOrder] = bfs(grid, start, end);
+        break;
+      case "depth first search":
+        [nodesVisitedInOrder, pathInOrder] = dfs(grid, start, end);
         break;
       default:
         setAlgorithmRunning(false);
